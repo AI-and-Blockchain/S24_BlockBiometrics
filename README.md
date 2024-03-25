@@ -18,3 +18,15 @@ Our goals for this project are the following:
 
 While these goals are quite simple there are some design challenges to consider. Our proposed design solution is layed out in the next solution
 
+## Design
+
+
+Our smart contract will be deployed by an owner, representing the owner of the security system, typically the homeowner. This contract will mint NFTs (Non-Fungible Tokens) that can only be transferred a single time between the user and the owner after they are minted. These NFTs will serve as access tokens and will be time-stamped at the point of minting and transfer.
+
+
+A visitor will undergo an initial registration phase where they register their fingerprint with the system. Any time the fingerprint is transmitted by the visitor, it will first be privatized. Once privatized, the fingerprint data will be stored on IPFS, and the corresponding link will be sent to the contract. The contract will then send a request to our machine learning model. If the model returns a positive result, indicating a match with an authorized fingerprint, an access NFT will be minted.
+
+
+We will host our machine learning model on AWS with an HTTP endpoint. This model will be trained using a fingerprint dataset and be deployed a single time.
+
+The proposed blockchain architecture leverages Ethereum smart contracts, IPFS, and machine learning models to create a secure, privacy-preserving, and tamper-proof access control system for home security, addressing the challenges of trust and privacy in a decentralized manner.
