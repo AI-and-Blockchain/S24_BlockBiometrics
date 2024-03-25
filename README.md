@@ -7,3 +7,14 @@ Block biometrics is a project that incorporates biometric authentication into a 
 
 
 To address this concern we have developed an ethereum smart contract based system that makes use of private AI to control user access.
+
+## Goals
+
+
+Our goals for this project are the following:
+* Develop a model that will allow for fingerprint recognition while maintaining privacy of users transmitting fingerprint data
+* Develop a smart contract that can allow for access control upon authentication with our model
+
+
+While these goals are quite simple there are some design challenges to consider. Our proposed design solution is layed out in the next solution
+
