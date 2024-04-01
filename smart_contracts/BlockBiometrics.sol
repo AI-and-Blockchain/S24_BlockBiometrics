@@ -1,5 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.22;
+  
+  pragma solidity ^0.8.0;
 
 contract BlockBiometrics {
     struct Visitor {
@@ -15,22 +17,22 @@ contract BlockBiometrics {
 
     modifier onlyOwner() {
         require(msg.sender == owner, "Only the contract owner can call this function");
-        ;
+        _;
     }
 
     modifier notRegistered() {
         require(!visitors[msg.sender].isRegistered, "Visitor is already registered");
-        ;
+        _;
     }
 
     modifier registered() {
         require(visitors[msg.sender].isRegistered, "Visitor is not registered");
-        ;
+        _;
     }
 
     modifier hasNoAccess() {
         require(!visitors[msg.sender].hasAccess, "Visitor already has access");
-        ;
+        _;
     }
 
     constructor() {
@@ -46,13 +48,4 @@ contract BlockBiometrics {
         visitors[msg.sender].hasAccess = true;
         emit AccessRequested(msg.sender);
     }
-
-    // Authenticate Request
-        // Make a request to oracle
-
-    // Authenticate Recieve
-        // Recieve oracle confirmation and give user access
-
-    // Access home
-        // if user is authenticated they can access home
 }
