@@ -33,8 +33,8 @@ The proposed blockchain architecture leverages Ethereum smart contracts, IPFS, a
 
 #### Registration
 
-![Registration Sequence](documentation/BlockBiometrics_Registration.PNG)
+![Registration Sequence](documentation/RegistrationProcess.PNG)
 
 #### Visitor Access Request
 
-![Visitor Sequence](documentation/BlockBiometrics_VisitorFlow.PNG)
+![Visitor Sequence](documentation/VisitationProcess.PNG)
