@@ -48,4 +48,34 @@ contract BlockBiometrics {
         visitors[msg.sender].hasAccess = true;
         emit AccessRequested(msg.sender);
     }
+
+        // Authenticate Request
+    // Make a request to oracle
+    function authenticateRequest() external registered hasNoAccess {
+        // Implementation of making a request to oracle goes here
+        // For simplicity, we emit an event indicating authentication request
+        emit AuthenticateRequest(msg.sender);
+    }
+
+    event AuthenticateRequest(address visitor);
+
+    // Authenticate Receive
+    // Receive oracle confirmation and give user access
+    function receiveConfirmation() external onlyOwner {
+        // Implementation of receiving oracle confirmation and granting access goes here
+        // For simplicity, we directly grant access to the visitor who made the request
+        visitors[msg.sender].hasAccess = true;
+        emit AccessGranted(msg.sender);
+    }
+
+    event AccessGranted(address visitor);
+
+    // Access home
+    // if user is authenticated they can access home
+    function accessHome() external view returns (string memory) {
+        require(visitors[msg.sender].hasAccess, "Visitor does not have access");
+        return "Home access granted";
+    }
+
+
 }
