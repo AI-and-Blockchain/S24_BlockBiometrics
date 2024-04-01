@@ -1,0 +1,32 @@
+Registration Process:
+actor Visitor
+participant BlockBiometric Contract
+database IPFS
+participant Chainlink
+participant Model Service
+
+Visitor->BlockBiometric Contract:Request Access
+Visitor<-->BlockBiometric Contract: Retrieve Contract Public Key 
+Visitor-->IPFS: Homomorphic Encryption of Fingerprints
+BlockBiometric Contract->Chainlink: Query Model
+Chainlink->Model Service:
+Model Service<-->IPFS: Retrieve Fingerprint
+Model Service->Chainlink:
+Chainlink->BlockBiometric Contract:Confirm Registration
+BlockBiometric Contract->Visitor: Confirm Registration
+
+Visitation Process:
+actor Visitor
+participant BlockBiometric Contract
+database IPFS
+participant Chainlink
+participant Model Service
+
+Visitor->BlockBiometric Contract:Request Access
+Visitor<-->BlockBiometric Contract: Retrieve Contract Public Key 
+Visitor-->IPFS: Homomorphic Encryption of Fingerprints
+BlockBiometric Contract->Chainlink: Query Model
+Chainlink->Model Service:
+Model Service<-->IPFS: Retrieve Fingerprint
+Model Service->Chainlink:
+Chainlink->BlockBiometric Contract:Confirm Match
