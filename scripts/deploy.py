@@ -1,14 +1,16 @@
-# interact.py
+import time
 from brownie import BlockBiometrics, accounts, network
 
 def main():
-    # Connect to a network (e.g., Ganache)
-    network.connect('development')
+    # Deploy the contract
+    deployer = accounts[0]
+    contract = BlockBiometrics.deploy({'from': deployer})
 
-    # Load the deployed contract
-    contract = BlockBiometrics[0]
+    print("Contract deployed at:", contract.address)
 
-    # Interact with the contract
     contract.register({'from': accounts[1]})
     contract.requestAccess({'from': accounts[1]})
+    
     print(contract.accessHome({'from': accounts[1]}))
+
+    time.sleep(1)
