@@ -23,6 +23,8 @@ We will host our machine learning model on AWS with an HTTP endpoint. This model
 
 The proposed blockchain architecture leverages Ethereum smart contracts, IPFS, and machine learning models to create a secure, privacy-preserving, and tamper-proof access control system for home security, addressing the challenges of trust and privacy in a decentralized manner.
 
+We are distributing a feature extraction+encryption method to users. Users will run this feature extractor on their fingerprint before encrypting their fingerprint data. These features will be transmitted to the smart contract which will then transmit this data to our model service which will verify if the encrypted fingerprint features are a match for features that exist in the system.
+
 ### Component Diagram
 
 ![Component Diagram](documentation/BlockBiometrics_Diagram.PNG)
