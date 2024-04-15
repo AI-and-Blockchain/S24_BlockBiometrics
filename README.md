@@ -79,3 +79,27 @@ pip install eth-brownie
 ```
 brownie run deploy
 ```
+
+### Backend- Installing flask
+
+```
+pip install Flask
+```
+Running the app
+```
+brownie run app
+```
+### Frontend- Running React
+```
+npm ci
+```
+```
+npm start
+``
+
+
+
+
+
+
+
