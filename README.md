@@ -41,7 +41,7 @@ We are distributing a feature extraction+encryption method to users. Users will 
 
 ## Executing the project
 
-### Setup for brownie
+### Project setup
 
 Requirements:
 * Python 3.6+
@@ -59,23 +59,42 @@ Installing ganache:
 npm install ganache --global
 ```
 
-Creating a python virtual environment
+Creating a python virtual environment:
 ```
 python -m venv .venv
 ```
 
-Activating a python virtual environment (Windows)
+Activating a python virtual environment (Windows):
 ```
 .\.venv\Scripts\activate
 ```
 
-Install brownie
+Install brownie and flask:
 ```
 pip install eth-brownie
+pip install flask
+```
+
+Installing frontend:
+```
+cd frontend
+npm ci
 ```
 
 ### Running the brownie contract
-
+From the root directory
 ```
 brownie run deploy
+```
+
+### Running the backend application
+From the root directory
+```
+brownie run app
+```
+### Running the frontend application
+From the root directory
+```
+cd frontend
+npm start
 ```
