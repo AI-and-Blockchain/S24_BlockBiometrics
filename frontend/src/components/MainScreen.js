@@ -1,33 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import RegisterImage from '../img/register.jpg'; // Import the register image
 import AuthenticatedImage from '../img/authenticated.jpg'; // Import the authenticated image
-import detectEthereumProvider from "@metamask/detect-provider";
+import Account from './Account';
 
 const MainScreen = () => {
-  // State variables to track conditions
-  const [isWalletConnected, setIsWalletConnected] = useState(null);
-  const [wallet, setWallet] = useState({ accounts: [] });
+  const [account, setAccount] = useState(null)
 
   const [isRegistered, setIsRegistered] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-
-  useEffect(() => {
-    const getProvider = async () => {
-        const provider = await detectEthereumProvider({ silent: true });
-        // console.log(provider);
-        // transform provider to true or false
-        setIsWalletConnected(Boolean(provider));
-    };
-
-    getProvider();
-  }, []);
-
-  const handleConnect = async () => {
-    let accounts = await window.ethereum.request({
-        method: "eth_requestAccounts",
-    });                     
-    setWallet({accounts});
-  };   
 
   // Function to handle registration
   const handleRegister = () => {
@@ -59,35 +39,16 @@ const MainScreen = () => {
 
   // Function to handle going back to the previous screen
   const handleGoBack = () => {
-    setIsWalletConnected(false);
+    setAccount(null);
     setIsRegistered(false);
   };
 
   return (
     <div>
-      <div>
-          Injected provider is {isWalletConnected ? "connected": "not connected"}
-          {!isWalletConnected && <p>Please connect your metamask wallet to interact with this system</p>}
-      </div>
 
-      <div>
-        {isWalletConnected && (
-          <button onClick={handleConnect}>Connect Metamask</button>
-        )}
-      </div>
+      {account === null && <Account setAccount={setAccount}/> }
 
-      <div>
-          {wallet.accounts.length > 0 && (
-              <div>
-                Wallet Accounts:
-                <ul>
-                  {wallet.accounts.map(elem => <li>{elem}</li>)}
-                </ul>
-              </div>
-          )}
-      </div>
-
-      {isWalletConnected && !isRegistered && (
+      {account && !isRegistered && (
         <div>
           <h2>Register</h2>
           {/* Display register image */}
@@ -100,7 +61,7 @@ const MainScreen = () => {
         </div>
       )}
 
-      {isWalletConnected && isRegistered && (
+      {account && isRegistered && (
         <div>
           <h2>Authenticate</h2>
           {/* Display authenticated image */}
