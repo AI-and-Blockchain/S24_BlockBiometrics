@@ -23,8 +23,8 @@ function App() {
       // Logic to submit the file for registration
       setIsRegistered(true);
     } else {
-      // Handle error condition, maybe display a message to the user
-      alert('Please select a file to register.');
+      // Alert the user to upload a file
+      alert('Please upload a file.');
     }
   };
 
@@ -34,8 +34,8 @@ function App() {
     if (selectedFile) {
       // Logic to submit the file for authentication
     } else {
-      // Handle error condition, maybe display a message to the user
-      alert('Please select a file to authenticate.');
+      // Alert the user to upload a file
+      alert('Please upload a file.');
     }
   };
 
@@ -75,7 +75,7 @@ function App() {
             <img src={RegisterImage} alt="Register" className="register-image" />
           </div>
           <input type="file" accept="image/*" onChange={handleFileSelect} />
-          <button onClick={handleRegister}>Register</button>
+          <button disabled={!selectedFile} onClick={handleRegister}>Register</button>
           <button onClick={handleGoBack}>Go Back</button>
         </div>
       )}
