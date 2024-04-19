@@ -4,32 +4,45 @@ from brownie import BlockBiometrics, accounts
 app = Flask(__name__)
  # Deploy the contract
 deployer = accounts[0]
-contract = BlockBiometrics.deploy({'from': deployer})
+contract = None
+# contract = BlockBiometrics.deploy({'from': deployer})
 
 
-@app.route('/register', methods=['POST'])
+@app.route('/deployed', methods=['GET'])
+def contract_deployed():
+    return jsonify({'message': contract != None})
+
+@app.route('/deploy', methods=['GET'])
+def deploy_contract():
+    global contract
+    contract = BlockBiometrics.deploy({'from': accounts[0]})
+
+    return jsonify({'message': 'Block biometrics has been deployed'})
+
+@app.route('/registered', methods=['GET'])
+def visitor_registered():
+    return jsonify({'message': contract.getIsRegistered({'from': accounts[1]})})
+
+@app.route('/register', methods=['GET'])
 def register_visitor():
-    sender_address = request.json['sender_address']
+    sender_address = accounts[1]
     contract.register({'from': sender_address})
     return jsonify({'message': 'Visitor registered successfully'})
 
-@app.route('/request-access', methods=['POST'])
+@app.route('/request', methods=['GET'])
 def request_access():
-    sender_address = request.json['sender_address']
+    sender_address = accounts[1]
     contract.requestAccess({'from': sender_address})
-    return jsonify({'message': 'Access requested successfully'})
+    return jsonify({'message': 'user has requested access'})
 
-@app.route('/authenticate-request', methods=['POST'])
-def authenticate_request():
-    sender_address = request.json['sender_address']
-    contract.authenticateRequest({'from': sender_address})
-    return jsonify({'message': 'Request authenticated'})
+@app.route('/requested', methods=["GET"])
+def access_requested():
+    sender_address = accounts[1]
+    return jsonify({'message': contract.getRequestID({'from': accounts[1]})})
 
-@app.route('/access-home', methods=['GET'])
+@app.route('/access', methods=["GET"])
 def access_home():
-    sender_address = deployer
-    result = contract.accessHome({'from': sender_address})
-    return 'hi'
-    #return jsonify({'message': result})
+    sender_address = accounts[1]
+    return jsonify({'message': 'user has access'})
     
 app.run(debug=True)
