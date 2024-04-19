@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import RegisterImage from '../img/register.jpg'; // Import the register image
 import AuthenticatedImage from '../img/authenticated.jpg'; // Import the authenticated image
+import HomeImage from '../img/home.jpg'; // Import the home image
+import DownloadImage from '../img/download.jpg'; // Import the download image
 
 const VisitorScreen = ({ handleGoBack }) => {
     const [isRegistered, setIsRegistered] = useState(false);
@@ -13,12 +15,9 @@ const VisitorScreen = ({ handleGoBack }) => {
         // Logic to register, for example, submit the selected file
         if (selectedFile) {
             // Logic to submit the file
-            fetch("http://localhost:5000/register").then(() => {
-                setIsRegistered(true);
-            }).catch((err) => {
-                setIsRegistered(true);
-            })
-    
+            fetch("http://localhost:5000/register")
+                .then(() => setIsRegistered(true))
+                .catch((err) => setIsRegistered(true));
         } else {
             // Alert the user to upload a file
             alert('Please upload a file.');
@@ -30,11 +29,9 @@ const VisitorScreen = ({ handleGoBack }) => {
         // Logic to authenticate, for example, submit the selected file
         if (selectedFile) {
             // Logic to submit the file for authentication
-            fetch("http://localhost:5000/request").then(() => {
-                setIsAuthenticated(true);
-            }).catch((err) => {
-                setIsAuthenticated(true);
-            })
+            fetch("http://localhost:5000/request")
+                .then(() => setIsAuthenticated(true))
+                .catch((err) => setIsAuthenticated(true));
         } else {
             // Alert the user to upload a file
             alert('Please upload a file.');
@@ -48,12 +45,10 @@ const VisitorScreen = ({ handleGoBack }) => {
 
     // Function to handle access home
     const handleAccess = () => {
-        fetch("http://localhost:5000/request").then(() => {
-            setIsAccessed(true);
-        }).catch((err) => {
-            setIsAccessed(true);
-        })
-    }
+        fetch("http://localhost:5000/request")
+            .then(() => setIsAccessed(true))
+            .catch((err) => setIsAccessed(true));
+    };
 
     return (
         <div>
@@ -87,24 +82,30 @@ const VisitorScreen = ({ handleGoBack }) => {
                 </div>
             )}
 
-            {isRegistered && isAuthenticated && !isAccessed && 
-                    <div>
-                        <h2>Access</h2>
-                        <div className="image-container">
-                            <img src={AuthenticatedImage} alt="Authenticated" className="authenticated-image" />
-                        </div>
-                        <button onClick={handleAccess}>Access</button>
-                        <div style={{ marginTop: '10px' }}> {/* Add margin-top */}
-                            <button onClick={handleGoBack}>Go Back</button>
-                        </div>
+            {isRegistered && isAuthenticated && !isAccessed && (
+                <div>
+                    <h2>Access</h2>
+                    <div className="image-container">
+                        <img src={HomeImage} alt="Home" className="home-image" />
                     </div>
-            }
+                    <button onClick={handleAccess}>Access</button>
+                    <div style={{ marginTop: '10px' }}> {/* Add margin-top */}
+                        <button onClick={handleGoBack}>Go Back</button>
+                    </div>
+                </div>
+            )}
 
-            {isRegistered && isAuthenticated && isAccessed &&
-                <div></div>
-            }
+            {isRegistered && isAuthenticated && isAccessed && (
+                <div>
+                    <h2>Home</h2>
+                    <div className="image-container">
+                        <img src={DownloadImage} alt="Download" className="download-image" />
+                    </div>
+                    <button onClick={handleGoBack}>Go Back</button>
+                </div>
+            )}
         </div>
-    )
-}
+    );
+};
 
 export default VisitorScreen;
