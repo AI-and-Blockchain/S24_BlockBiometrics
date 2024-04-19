@@ -14,6 +14,7 @@ contract BlockBiometrics {
     }
 
     address public owner;
+    address public oracle;
     mapping(address => Visitor) public visitors;
     mapping(uint256 => address) public authenticationRequests; // Mapping from request ID to visitor address
 
@@ -58,10 +59,13 @@ contract BlockBiometrics {
     function getAccess() view public returns (bool) {
         return visitors[msg.sender].hasAccess;
     }
+    
     constructor() {
         owner = msg.sender;
     }
-
+    function setOracle(address oracle_) external {
+        oracle = oracle_;
+    }
     function register() external notRegistered {
         visitors[msg.sender].isRegistered = true;
         emit VisitorRegistered(msg.sender);
@@ -72,6 +76,7 @@ contract BlockBiometrics {
         visitors[msg.sender].authenticationRequestId = requestId; // Link request ID to visitor
         visitors[msg.sender].requestTime = block.timestamp; // Record request time
         authenticationRequests[requestId] = msg.sender; // Store request ID
+        (Oracle)(oracle).makeRequest("placeholder", requestId);
         emit AccessRequested(msg.sender, requestId); // Emit event with request ID
     }
 
@@ -83,7 +88,7 @@ contract BlockBiometrics {
         emit AuthenticateRequest(msg.sender, requestId); // Emit event with request ID
     }
 
-    function receiveConfirmation(uint256 requestId, string memory result) external onlyOwner {
+    function receiveConfirmation(uint256 requestId, string memory result) external {
         address visitor = authenticationRequests[requestId]; // Get visitor address from request ID
         require(visitors[visitor].isRegistered, "Visitor is not registered");
         require(visitors[visitor].authenticationRequestId == requestId, "Invalid request ID");
