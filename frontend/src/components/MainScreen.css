@@ -1,0 +1,15 @@
+/* MainScreen.css */
+
+.main-container-wrapper {
+    margin: 20px; /* Add top and side margins */
+  }
+  
+  .main-container {
+    border-top: 4px green; /* Transparent border on top */
+    border-bottom: 8px solid green; /* Green border on bottom */
+    border-radius: 50px; /* Rounded corners */
+    background-color: white; /* White background */
+    padding: 80px; /* Add some padding */
+    display: inline-block; /* Display as inline-block */
+  }
+  

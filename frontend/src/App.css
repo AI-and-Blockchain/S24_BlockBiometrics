@@ -7,9 +7,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #282c34;
+  background-color: white;
   /*color of the titles*/
-  color: rgb(162, 29, 29);
+  color: green;
 }
 
 .App {
