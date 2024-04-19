@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import detectEthereumProvider from "@metamask/detect-provider";
 
-const Account = ({setAccount}) => {
+const AccountSelection = ({setAccount}) => {
   // State variables to track conditions
   const [isWalletConnected, setIsWalletConnected] = useState(null);
   const [wallet, setWallet] = useState({ accounts: [] });
@@ -55,4 +55,4 @@ const Account = ({setAccount}) => {
   )
 }
 
-export default Account
+export default AccountSelection

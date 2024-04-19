@@ -1,10 +1,12 @@
 import React, { useState} from 'react';
 import RegisterImage from '../img/register.jpg'; // Import the register image
 import AuthenticatedImage from '../img/authenticated.jpg'; // Import the authenticated image
-import Account from './Account';
+import AccountSelection from './AccountSelection';
+import UserTypeSelection from './UserTypeSelection';
 
 const MainScreen = () => {
   const [account, setAccount] = useState(null)
+  const [userType, setUserType] = useState(null)
 
   const [isRegistered, setIsRegistered] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -39,16 +41,19 @@ const MainScreen = () => {
 
   // Function to handle going back to the previous screen
   const handleGoBack = () => {
-    setAccount(null);
-    setIsRegistered(false);
+    setUserType(null);
   };
 
   return (
     <div>
 
-      {account === null && <Account setAccount={setAccount}/> }
+      {account === null && <AccountSelection setAccount={setAccount}/> }
 
-      {account && !isRegistered && (
+      {account && userType === null && 
+        <UserTypeSelection setUserType={setUserType} handleGoBack={() => setAccount(null)}/>
+      }
+
+      {userType === "V" && !isRegistered && (
         <div>
           <h2>Register</h2>
           {/* Display register image */}
@@ -61,7 +66,7 @@ const MainScreen = () => {
         </div>
       )}
 
-      {account && isRegistered && (
+      {userType === "V" && isRegistered && (
         <div>
           <h2>Authenticate</h2>
           {/* Display authenticated image */}
