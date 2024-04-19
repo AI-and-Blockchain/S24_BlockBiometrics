@@ -85,15 +85,12 @@ def encrypt(feature):
     # add fake data
     with open('ppModel.pkl', 'rb') as file:
         ppModel = pickle.load(file)
-    # Create custom data ranges
-    in_range = pyope.ValueRange(pyope.DEFAULT_IN_RANGE_START, 2 ** 43 - 1)
-    out_range = pyope.ValueRange(pyope.DEFAULT_OUT_RANGE_START, 2 ** 63 - 1)
-    metadata = OPEMetadata.OPEMetadata(ppModel, 0, 100, in_range.end)
+        
     # Set up encryption materials.
-    ppModelKey, ppQueryKey = PPKey.generatePPXGBoostKeys(in_range, out_range)
-    queryEncryptor = PPQuery.QueryEncryptor(ppQueryKey, ppModel.get_features(), metadata)
+    with open('queryEncryptor.pkl', 'rb') as file:
+        queryEncryptor = pickle.load(file)
     enc_queries = PPQuery.encrypt_queries(queryEncryptor, queries)
-    return enc_queries, ppQueryKey
+    return enc_queries, queryEncryptor.key
 
 # predict encrypted feature
 def predict(num_classes, enc_queries):
@@ -114,11 +111,13 @@ if __name__ == '__main__':
     _, feature = read_image(os.path.join(folder, img_path))
 
     # encrypt feature
-    print("Encrypted feature:", encrypt(feature))
+    print("Encrypted feature:", vars(encrypt(feature)[0][0]))
 
     # predict model
-    # enc_predictions = predict(num_classes = 10, enc_queries = encrypt(feature)[0])
+    enc_predictions = predict(num_classes = 10, enc_queries = encrypt(feature)[0])
     # print(enc_predictions)
+
+    print(decrypt(enc_predictions, encrypt(feature)[1]))
 
 
 
