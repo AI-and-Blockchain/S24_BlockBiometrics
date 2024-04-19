@@ -1,10 +1,10 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+//import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract BlockBiometrics {
-    using SafeMath for uint256;
+    //using SafeMath for uint256;
 
     struct Visitor {
         bool isRegistered;
@@ -46,7 +46,18 @@ contract BlockBiometrics {
         require(!visitors[msg.sender].hasAccess, "Visitor already has access");
         _;
     }
-
+    function getIsRegistered() view public returns (bool) {
+        return visitors[msg.sender].isRegistered;
+    }
+    function getRequestID() view public returns (uint256) {
+        return visitors[msg.sender].authenticationRequestId;
+    }
+    function getFromRequestId(uint256 id) view public returns (address) {
+        return authenticationRequests[id];
+    }
+    function getAccess() view public returns (bool) {
+        return visitors[msg.sender].hasAccess;
+    }
     constructor() {
         owner = msg.sender;
     }
@@ -77,7 +88,7 @@ contract BlockBiometrics {
         require(visitors[visitor].isRegistered, "Visitor is not registered");
         require(visitors[visitor].authenticationRequestId == requestId, "Invalid request ID");
         // This is the fallback
-        require(block.timestamp.sub(visitors[visitor].requestTime) <= timeoutDuration, "Request timed out");
+        require(block.timestamp - visitors[visitor].requestTime <= timeoutDuration, "Request timed out");
         // Implement logic to receive confirmation from the oracle
         // For demonstration purposes, let's assume the oracle confirms access for the visitor
         // Replace this with the actual oracle integration logic
@@ -99,7 +110,7 @@ contract BlockBiometrics {
 
     // Function to generate unique request ID
     function generateRequestId() private returns (uint256) {
-        authenticationRequestCounter = authenticationRequestCounter.add(1);
+        authenticationRequestCounter = authenticationRequestCounter + 1;
         return authenticationRequestCounter;
     }
 }

@@ -1,3 +1,4 @@
 .venv
 build
 scripts/__pycache__
+.vnv
