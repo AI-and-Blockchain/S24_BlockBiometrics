@@ -47,6 +47,28 @@ def test5(deploy):
     assert(contract.getAccess({'from': sender}) == True)
     contract.revokeAccess(sender, {'from': owner})
     assert(contract.getAccess({'from': sender}) == False)
+def test6(deploy):
+    contract = deploy
+    sender = accounts[1]
+    errorthrown = False
+    try:
+        contract.requestAccess({'from': sender})
+    except:
+        errorthrown = True
+    assert(errorthrown)
+def test7(deploy):
+    contract = deploy
+    owner = contract.owner()
+    sender = accounts[1]
+    contract.register({'from': sender})
+    errorthrown = False
+    try:
+        contract.revokeAccess(sender, {'from': owner})
+    except:
+        errorthrown = True
+    assert(errorthrown)
+        
+    
 
 
 

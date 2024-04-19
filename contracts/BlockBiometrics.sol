@@ -83,7 +83,7 @@ contract BlockBiometrics {
         emit AuthenticateRequest(msg.sender, requestId); // Emit event with request ID
     }
 
-    function receiveConfirmation(uint256 requestId) external onlyOwner {
+    function receiveConfirmation(uint256 requestId, string memory result) external onlyOwner {
         address visitor = authenticationRequests[requestId]; // Get visitor address from request ID
         require(visitors[visitor].isRegistered, "Visitor is not registered");
         require(visitors[visitor].authenticationRequestId == requestId, "Invalid request ID");
@@ -112,5 +112,37 @@ contract BlockBiometrics {
     function generateRequestId() private returns (uint256) {
         authenticationRequestCounter = authenticationRequestCounter + 1;
         return authenticationRequestCounter;
+    }
+}
+contract Oracle {
+    address public owner;
+    string public request;
+    string public result;
+    address public sender;
+    uint256 public id;
+
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Only the contract owner can call this function");
+        _;
+    }
+
+    constructor() {
+        owner = msg.sender;
+    }
+    
+    function makeRequest(string memory _request, uint256 sender_id) external{
+        request = _request;
+        sender = msg.sender;
+        id = sender_id;
+    }
+    
+    function getRequest() public view onlyOwner returns (string memory) {
+        return request;
+    }
+    
+    function returnResult(string memory _result) public onlyOwner {
+        result = _result;
+        // call original_contract method
+        (BlockBiometrics)(sender).receiveConfirmation(id, result);
     }
 }
