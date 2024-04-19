@@ -6,8 +6,11 @@ const ContractDeploy = ({handleGoBack}) => {
 
   const onClick = () => {
     //   const provider = new ethers.providers.Web3Provider(window.ethereum);
-    console.log("Deploy contract");
-    setIsDeployed(true);
+    fetch("http://localhost:5000/deploy").then(() => {
+      setIsDeployed(true);
+    }).catch((err) => {
+      setIsDeployed(true);
+    })
   }
 
   return (

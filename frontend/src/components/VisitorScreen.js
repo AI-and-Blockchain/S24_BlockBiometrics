@@ -10,8 +10,13 @@ const VisitorScreen = ({ handleGoBack }) => {
     const handleRegister = () => {
         // Logic to register, for example, submit the selected file
         if (selectedFile) {
-            // Logic to submit the file for registration
-            setIsRegistered(true);
+            // Logic to submit the file
+            fetch("http://localhost:5000/register").then(() => {
+                setIsRegistered(true);
+            }).catch((err) => {
+                setIsRegistered(true);
+            })
+    
         } else {
             // Alert the user to upload a file
             alert('Please upload a file.');
@@ -23,6 +28,11 @@ const VisitorScreen = ({ handleGoBack }) => {
         // Logic to authenticate, for example, submit the selected file
         if (selectedFile) {
             // Logic to submit the file for authentication
+            fetch("http://localhost:5000/request").then(() => {
+                setIsRegistered(true);
+            }).catch((err) => {
+                setIsRegistered(true);
+            })
         } else {
             // Alert the user to upload a file
             alert('Please upload a file.');
