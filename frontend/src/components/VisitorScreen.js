@@ -4,6 +4,8 @@ import AuthenticatedImage from '../img/authenticated.jpg'; // Import the authent
 
 const VisitorScreen = ({ handleGoBack }) => {
     const [isRegistered, setIsRegistered] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [isAccessed, setIsAccessed] = useState(false);
     const [selectedFile, setSelectedFile] = useState(null);
 
     // Function to handle registration
@@ -29,9 +31,9 @@ const VisitorScreen = ({ handleGoBack }) => {
         if (selectedFile) {
             // Logic to submit the file for authentication
             fetch("http://localhost:5000/request").then(() => {
-                setIsRegistered(true);
+                setIsAuthenticated(true);
             }).catch((err) => {
-                setIsRegistered(true);
+                setIsAuthenticated(true);
             })
         } else {
             // Alert the user to upload a file
@@ -43,6 +45,15 @@ const VisitorScreen = ({ handleGoBack }) => {
     const handleFileSelect = (event) => {
         setSelectedFile(event.target.files[0]);
     };
+
+    // Function to handle access home
+    const handleAccess = () => {
+        fetch("http://localhost:5000/request").then(() => {
+            setIsAccessed(true);
+        }).catch((err) => {
+            setIsAccessed(true);
+        })
+    }
 
     return (
         <div>
@@ -61,7 +72,7 @@ const VisitorScreen = ({ handleGoBack }) => {
                 </div>
             )}
 
-            {isRegistered && (
+            {isRegistered && !isAuthenticated && (
                 <div>
                     <h2>Authenticate</h2>
                     {/* Display authenticated image */}
@@ -75,6 +86,23 @@ const VisitorScreen = ({ handleGoBack }) => {
                     </div>
                 </div>
             )}
+
+            {isRegistered && isAuthenticated && !isAccessed && 
+                    <div>
+                        <h2>Access</h2>
+                        <div className="image-container">
+                            <img src={AuthenticatedImage} alt="Authenticated" className="authenticated-image" />
+                        </div>
+                        <button onClick={handleAccess}>Access</button>
+                        <div style={{ marginTop: '10px' }}> {/* Add margin-top */}
+                            <button onClick={handleGoBack}>Go Back</button>
+                        </div>
+                    </div>
+            }
+
+            {isRegistered && isAuthenticated && isAccessed &&
+                <div></div>
+            }
         </div>
     )
 }

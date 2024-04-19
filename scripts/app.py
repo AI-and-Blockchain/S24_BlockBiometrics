@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify
-from brownie import BlockBiometrics, accounts
+from brownie import BlockBiometrics, Oracle, accounts
 
 app = Flask(__name__)
  # Deploy the contract
 deployer = accounts[0]
 contract = None
+oracle = None
 # contract = BlockBiometrics.deploy({'from': deployer})
 
 
@@ -15,7 +16,11 @@ def contract_deployed():
 @app.route('/deploy', methods=['GET'])
 def deploy_contract():
     global contract
+    global oracle
     contract = BlockBiometrics.deploy({'from': accounts[0]})
+    oracle = Oracle.deploy({'from': deployer})
+    owner = contract.owner()
+    contract.setOracle(oracle.address)
 
     return jsonify({'message': 'Block biometrics has been deployed'})
 
@@ -43,6 +48,8 @@ def access_requested():
 @app.route('/access', methods=["GET"])
 def access_home():
     sender_address = accounts[1]
+    oracle.returnResult("hi", {'from': accounts[0]})
+    contract.accessHome({'from': accounts[1]})
     return jsonify({'message': 'user has access'})
     
 app.run(debug=True)
