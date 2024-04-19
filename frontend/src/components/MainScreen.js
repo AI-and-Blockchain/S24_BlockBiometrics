@@ -3,14 +3,14 @@ import AccountSelection from './AccountSelection';
 import UserTypeSelection from './UserTypeSelection';
 import ContractDeploy from './ContractDeploy';
 import VisitorScreen from './VisitorScreen';
+import './MainScreen.css'; // Import the CSS file for MainScreen
 
 const MainScreen = () => {
   const [account, setAccount] = useState(null)
   const [userType, setUserType] = useState(null)
 
   return (
-    <div>
-
+    <div className="main-container">
       {account === null && <AccountSelection setAccount={setAccount}/> }
 
       {account && userType === null && 
@@ -24,4 +24,4 @@ const MainScreen = () => {
   )
 }
 
-export default MainScreen
+export default MainScreen;
