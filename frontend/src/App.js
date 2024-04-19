@@ -1,20 +1,34 @@
-import React, { useState } from 'react';
 import './App.css';
-import WalletImage from './wallet.jpg'; // Import the wallet image
+import React, { useState, useEffect } from 'react';
 import RegisterImage from './register.jpg'; // Import the register image
 import AuthenticatedImage from './authenticated.jpg'; // Import the authenticated image
+import detectEthereumProvider from "@metamask/detect-provider";
 
 function App() {
   // State variables to track conditions
-  const [isWalletConnected, setIsWalletConnected] = useState(false);
+  const [isWalletConnected, setIsWalletConnected] = useState(null);
+  const [wallet, setWallet] = useState({ accounts: [] });
+
   const [isRegistered, setIsRegistered] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
-  // Function to handle wallet connection
-  const handleConnectWallet = () => {
-    // Logic to connect wallet
-    setIsWalletConnected(true);
-  };
+  useEffect(() => {
+    const getProvider = async () => {
+        const provider = await detectEthereumProvider({ silent: true });
+        // console.log(provider);
+        // transform provider to true or false
+        setIsWalletConnected(Boolean(provider));
+    };
+
+    getProvider();
+  }, []);
+
+  const handleConnect = async () => {
+    let accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+    });                     
+    setWallet({accounts});
+  };   
 
   // Function to handle registration
   const handleRegister = () => {
@@ -55,17 +69,28 @@ function App() {
       <header>
         <h1>BlockBiometrics</h1>
       </header>
-      {/* Conditionally render screens based on conditions */}
-      {!isWalletConnected && (
-        <div>
-          <h2>Connect Wallet</h2>
-          {/* Display wallet image */}
-          <div className="image-container">
-            <img src={WalletImage} alt="Wallet" className="wallet-image" />
-          </div>
-          <button onClick={handleConnectWallet}>Connect</button>
-        </div>
-      )}
+
+      <div>
+          Injected provider is {isWalletConnected ? "connected": "not connected"}
+          {!isWalletConnected && <p>Please connect your metamask wallet to interact with this system</p>}
+      </div>
+
+      <div>
+        {isWalletConnected && (
+          <button onClick={handleConnect}>Connect Metamask</button>
+        )}
+      </div>
+
+      <div>
+          {wallet.accounts.length > 0 && (
+              <div>
+                Wallet Accounts:
+                <ul>
+                  {wallet.accounts.map(elem => <li>{elem}</li>)}
+                </ul>
+              </div>
+          )}
+      </div>
 
       {isWalletConnected && !isRegistered && (
         <div>
