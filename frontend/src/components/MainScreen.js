@@ -3,6 +3,7 @@ import RegisterImage from '../img/register.jpg'; // Import the register image
 import AuthenticatedImage from '../img/authenticated.jpg'; // Import the authenticated image
 import AccountSelection from './AccountSelection';
 import UserTypeSelection from './UserTypeSelection';
+import ContractDeploy from './ContractDeploy';
 
 const MainScreen = () => {
   const [account, setAccount] = useState(null)
@@ -52,6 +53,8 @@ const MainScreen = () => {
       {account && userType === null && 
         <UserTypeSelection setUserType={setUserType} handleGoBack={() => setAccount(null)}/>
       }
+
+      {userType === "H" && <ContractDeploy handleGoBack={() => setUserType(null)}/>}
 
       {userType === "V" && !isRegistered && (
         <div>
