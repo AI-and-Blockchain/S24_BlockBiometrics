@@ -5,7 +5,8 @@ def main():
     # Deploy the contract
     deployer = accounts[0]
     contract = BlockBiometrics.deploy({'from': deployer})
-
+    owner = contract.owner()
+    print("owener: " + owner)
     print("Contract deployed at:", contract.address)
 
     contract.register({'from': accounts[1]})
