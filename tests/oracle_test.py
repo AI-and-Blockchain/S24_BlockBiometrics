@@ -1,5 +1,5 @@
 import pytest
-from brownie import Oracle, accounts
+from brownie import Oracle, BlockBiometrics, accounts
 from brownie.exceptions import VirtualMachineError
 
 @pytest.fixture(scope="module", autouse=True)
@@ -32,12 +32,22 @@ def testMakeRequest():
     homeowner = accounts[0]
     contract = Oracle.deploy(homeowner, {'from': homeowner})
 
-    request = ('0x3194cBDC3dbcd3E11a07892e7bA5c3394048Cc87', 1, 1714349438, '')
+    request = (homeowner, 1, 1714349438, '')
     contract.makeRequest(request, {'from': homeowner})
 
     assert contract.request_queue(0, {'from': homeowner}) == request
     with pytest.raises(VirtualMachineError):
         contract.request_queue(1, {'from': homeowner})
+
+# In theory another contract could send requests to this oracle
+def testOutsiderMakeRequest():
+    homeowner = accounts[0]
+    contract = Oracle.deploy(homeowner, {'from': homeowner})
+
+    request = (accounts[1], 1, 1714349438, '')
+    contract.makeRequest(request, {'from': accounts[1]})
+
+    assert contract.request_queue(0, {'from': homeowner}) == request
 
 # Testing wether multiple requests are correctly stored
 def testMakeMultipleRequests():
@@ -45,19 +55,29 @@ def testMakeMultipleRequests():
     contract = Oracle.deploy(homeowner, {'from': homeowner})
 
     for i in range(3):
-        request = ('0x3194cBDC3dbcd3E11a07892e7bA5c3394048Cc87', i+1, 1714349438, '')
+        request = (homeowner, i+1, 1714349438, '')
 
         contract.makeRequest(request, {'from': homeowner})
         assert contract.request_queue(i, {'from': homeowner}) == request
         with pytest.raises(VirtualMachineError):
             contract.request_queue(i+1, {'from': homeowner})
 
+def testOutsiderPopRequest():
+    homeowner = accounts[0]
+    contract = Oracle.deploy(homeowner, {'from': homeowner})
+
+    request = (homeowner, 1, 1714349438, '')
+    contract.makeRequest(request, {'from': homeowner})
+
+    with pytest.raises(VirtualMachineError):
+        contract.popRequest({'from': accounts[1]})
+
 # Testing whether popped request value matches up
 def testPopRequest():
     homeowner = accounts[0]
     contract = Oracle.deploy(homeowner, {'from': homeowner})
 
-    request = ('0x3194cBDC3dbcd3E11a07892e7bA5c3394048Cc87', 1, 1714349438, '')
+    request = (homeowner, 1, 1714349438, '')
     contract.makeRequest(request, {'from': homeowner})
 
     assert contract.popRequest({'from': homeowner}).return_value == request
@@ -71,7 +91,7 @@ def testRepeatedPopRequest():
     contract = Oracle.deploy(homeowner, {'from': homeowner})
 
     for i in range(3):
-        request = ('0x3194cBDC3dbcd3E11a07892e7bA5c3394048Cc87', i+1, 1714349438, '')
+        request = (homeowner, i+1, 1714349438, '')
 
         contract.makeRequest(request, {'from': homeowner})
         assert contract.request_queue(0, {'from': homeowner}) == request
@@ -89,22 +109,51 @@ def testPopMultipleRequests():
 
     for _ in range(2):
         for i in range(3):
-            request = ('0x3194cBDC3dbcd3E11a07892e7bA5c3394048Cc87', i+1, 1714349438, '')
+            request = (homeowner, i+1, 1714349438, '')
             contract.makeRequest(request, {'from': homeowner})
 
         for i in range(2, -1, -1):
-            request = ('0x3194cBDC3dbcd3E11a07892e7bA5c3394048Cc87', i+1, 1714349438, '')
+            request = (homeowner, i+1, 1714349438, '')
 
             assert contract.popRequest({'from': homeowner}).return_value == request
             with pytest.raises(VirtualMachineError):
                 contract.request_queue(i, {'from': homeowner})
 
-# Testing that the publish method can not be called without a blockbiometrics address
-def testPublishResultFailiure():
+# Testing that the publish method can not be called without a blockbiometrics address as the sender
+def testNonContractPublishResultFailiure():
     homeowner = accounts[0]
     contract = Oracle.deploy(homeowner, {'from': homeowner})
 
     with pytest.raises(VirtualMachineError):
-        contract.publishResult('0x3194cBDC3dbcd3E11a07892e7bA5c3394048Cc87', 1, "accepted", {'from': homeowner})
+        contract.publishResult(homeowner, 1, "accepted", {'from': homeowner})
     with pytest.raises(VirtualMachineError):
         contract.publishResult(contract.address, 1, "accepted", {'from': homeowner})
+
+# Simple test to check that there are no failures in publishing result to a contract
+def testPublishResult():
+    homeowner = accounts[0]
+    visitor = accounts[1]
+
+    contract = BlockBiometrics.deploy({'from': homeowner})
+    oracle = Oracle.at(contract.oracle())
+
+    contract.register({'from': visitor})
+    contract.authenticate({'from': visitor})
+
+    sender, id, _, _ = oracle.popRequest({'from': homeowner}).return_value
+    oracle.publishResult(sender, id, "accepted", {'from': homeowner})
+
+# Test making sure an outsider can't publish a result using the oracle
+def testOutsiderPublishResultFailiure():
+    homeowner = accounts[0]
+    visitor = accounts[1]
+
+    contract = BlockBiometrics.deploy({'from': homeowner})
+    oracle = Oracle.at(contract.oracle())
+
+    contract.register({'from': visitor})
+    contract.authenticate({'from': visitor})
+
+    sender, id, _, _ = oracle.popRequest({'from': homeowner}).return_value
+    with pytest.raises(VirtualMachineError):
+        oracle.publishResult(sender, id, "accepted", {'from': visitor})

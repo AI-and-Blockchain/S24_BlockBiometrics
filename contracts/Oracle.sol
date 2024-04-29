@@ -17,6 +17,7 @@ contract Oracle {
     }
     
     function makeRequest(Request memory _request) external{
+        require(msg.sender == _request.sender, "The sender in the request body must be the message sender");
         request_queue.push(_request);
     }
 

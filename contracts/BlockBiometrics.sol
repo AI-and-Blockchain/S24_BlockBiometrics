@@ -60,6 +60,10 @@ contract BlockBiometrics {
         oracle = new Oracle(owner);
     }
 
+    function setOracle(Oracle _oracle) public onlyOwner() {
+        oracle = _oracle;
+    }
+
     function getRequest(uint256 id) public view returns (Request memory) {
         require(id <= authenticationRequestCounter, "ID is invalid");
         address visitor = authenticationRequests[id];

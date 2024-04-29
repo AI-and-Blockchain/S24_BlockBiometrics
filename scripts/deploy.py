@@ -1,10 +1,11 @@
 import time
 from brownie import BlockBiometrics, Oracle, accounts
 
+# Basic script to show proper use of the contract for registration and authentication
 def main():
     # Parties
     homeowner = accounts[0]
-    visitor = accounts[0]
+    visitor = accounts[1]
 
     # Deploy the contract
     contract = BlockBiometrics.deploy({'from': homeowner})
@@ -20,8 +21,7 @@ def main():
 
     # Oracle processes request
     print(oracle.request_queue(0, {'from': homeowner}))
-    request = oracle.popRequest({'from': homeowner}).return_value
-    sender, id, _, _ = request
+    sender, id, _, _ = oracle.popRequest({'from': homeowner}).return_value
     response = "accepted"
     oracle.publishResult(sender, id, response, {'from': homeowner})
 
